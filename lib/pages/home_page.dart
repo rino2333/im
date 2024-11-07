@@ -35,8 +35,18 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
+          // SizedBox(
+          //   width: 260,
+          //   child: ContactsPage(),
+          // ),
+          Container(
+            width: 260,
+            color: Color(0xFFdddddd), // 设置背景色
+            child: ContactsPage()
+          ),
+
           Expanded(
-            child: ConstractPage()
+            child: Text('123')
           )
         ],
       ),
@@ -44,27 +54,27 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class ConstractPage extends StatefulWidget {
+class ContactsPage extends StatefulWidget {
 
   @override
-  State<ConstractPage> createState() => _ConstractPageState();
+  State<ContactsPage> createState() => _ContactsPageState();
 }
 
-class _ConstractPageState extends State<ConstractPage> {
+class _ContactsPageState extends State<ContactsPage> {
   var contacts = ['Elon Musk', 'Donald John Trump', 'Tim Cook'];
 
   @override
   Widget build(BuildContext context) {
       return ListView(
         children: [
-          for (var contact in contacts) 
-            ListTile(
-              title: Text(contact),
-              leading: Icon(Icons.person),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-              },
-            ),
+          // for (var contact in contacts) 
+          //   ListTile(
+          //     title: Text(contact),
+          //     leading: Icon(Icons.person),
+          //     trailing: Icon(Icons.chevron_right),
+          //     onTap: () {
+          //     },
+          //   ),
           for (var contact in contacts) 
             Container(
               alignment: Alignment.centerLeft,
@@ -72,7 +82,7 @@ class _ConstractPageState extends State<ConstractPage> {
               height: 68,
               padding: const EdgeInsets.all(12),
               // color: Color(0xffdddddd),
-              color: Color(0xFFF6F6F6),
+              // color: Color.fromARGB(255, 47, 189, 104),
               child: Text(contact),
             ),
             // BigCard(contact: contact),
@@ -80,26 +90,5 @@ class _ConstractPageState extends State<ConstractPage> {
           // Image.network('https://docs.flutter.cn/assets/images/cn/flutter-cn-logo.png')
         ],
       );
-  }
-}
-
-class BigCard extends StatelessWidget {
-  const BigCard({
-    super.key,
-    required this.contact,
-  });
-
-  final String contact;
-
-  @override
-  Widget build(BuildContext context) {
-    // final theme = Theme.of(context);
-    return Card(
-      // color: ColorScheme.fromSeed(seedColor: Colors.red),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(contact),
-      ),
-    );
   }
 }
