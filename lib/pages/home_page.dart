@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   @override
@@ -35,28 +37,66 @@ class ContactsPage extends StatefulWidget {
 
 class _ContactsPageState extends State<ContactsPage> {
   var contacts = ['Elon Musk', 'Donald John Trump', 'Tim Cook'];
-  final _channel = WebSocketChannel.connect(
-    Uri.parse('wss://echo.websocket.events')
-  );
-
+  // final _channel = WebSocketChannel.connect(
+  //   Uri.parse('wss://echo.websocket.events')
+  // );
+  var channel;
   @override
   void initState() {
-    print('123');
-
     super.initState();
     _connect();
   }
 
+  Future<String?> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
+
+
   Future _connect() async {
-    print('connect');
     try {
-      final response = await http.post(
-        Uri.parse('http://47.245.82.251:31104/api/community/chat/connect'),
-        headers: {
-          'Authorization': '123'
+      String? token = await getToken();
+      if (token != null) {
+        final response = await http.post(
+          Uri.parse('http://47.245.82.251:31104/api/community/chat/connect'),
+          headers: {
+            'Authorization': token
+          }
+        );
+        print('${response.body}');
+        if (response.statusCode == 200) {
+          final responseData = jsonDecode(response.body);
+          if (responseData['code'] == 0) {
+            print('Received: ${responseData['data']}');
+            channel = WebSocketChannel.connect(
+              Uri.parse(responseData['data']),
+            );
+            channel.stream.listen(
+              (message) {
+                print('Received: $message');
+              },
+               onDone: () {
+                print('onDone: ');
+              },
+              onError: (error) {
+                // 处理连接错误
+                print('Error: $error');
+              },
+            );
+            channel.sink.add('Hello, WebSocket!');
+            final response2 = await http.post(
+              Uri.parse('http://47.245.82.251:31104/api/community/chat/connected'),
+              headers: {
+                'Authorization': token
+              }
+            );
+            print('${response2.body}');
+          } else {
+          }
+        } else {
         }
-      );
-      print('${response.body}');
+      }
     } catch (e) {
       print('$e');
     }
@@ -67,7 +107,7 @@ class _ContactsPageState extends State<ContactsPage> {
       return ListView(
         children: [
           StreamBuilder(
-            stream: _channel.stream,
+            stream: channel?.stream,
             builder: (context, snapshot) {
               return Text(snapshot.hasData ? '${snapshot.data}' : '');
             },
