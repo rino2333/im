@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'register_page.dart';
 import 'home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -14,6 +15,11 @@ class LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   String _errorMessage = '';
   String _successMessage = '';
+
+  Future setToken(token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', token);
+  }
 
   Future _login() async {
     final username = _usernameController.text;
@@ -46,6 +52,7 @@ class LoginPageState extends State<LoginPage> {
           setState(() {
             _successMessage = 'Login successful!';
             _errorMessage = '';
+            setToken(responseData['data']['token']);
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
           });
         } else {

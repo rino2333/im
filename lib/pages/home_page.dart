@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -33,11 +35,43 @@ class ContactsPage extends StatefulWidget {
 
 class _ContactsPageState extends State<ContactsPage> {
   var contacts = ['Elon Musk', 'Donald John Trump', 'Tim Cook'];
+  final _channel = WebSocketChannel.connect(
+    Uri.parse('wss://echo.websocket.events')
+  );
+
+  @override
+  void initState() {
+    print('123');
+
+    super.initState();
+    _connect();
+  }
+
+  Future _connect() async {
+    print('connect');
+    try {
+      final response = await http.post(
+        Uri.parse('http://47.245.82.251:31104/api/community/chat/connect'),
+        headers: {
+          'Authorization': '123'
+        }
+      );
+      print('${response.body}');
+    } catch (e) {
+      print('$e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
       return ListView(
         children: [
+          StreamBuilder(
+            stream: _channel.stream,
+            builder: (context, snapshot) {
+              return Text(snapshot.hasData ? '${snapshot.data}' : '');
+            },
+          ),
           for (var contact in contacts) 
             // ListTile(
             //   leading: ClipRRect(
