@@ -21,7 +21,11 @@ class _HomePageState extends State<HomePage> {
         preferredSize: Size.fromHeight(44.0), 
         child: AppBar(
           title: Text('IM'),
-          backgroundColor: Color(0xffeaeaea),
+          backgroundColor: Colors.grey.shade200,
+          actions: [
+            IconButton(onPressed: () {}, icon: Icon(Icons.search, color: Colors.white,)),
+            IconButton(onPressed: () {}, icon: Icon(Icons.add, color: Colors.white,))
+          ],
         )
       ),
       body: ContactsPage(),
@@ -40,11 +44,19 @@ class _ContactsPageState extends State<ContactsPage> {
   // final _channel = WebSocketChannel.connect(
   //   Uri.parse('wss://echo.websocket.events')
   // );
-  var channel;
+  late String token;
+  WebSocketChannel? channel;
   @override
   void initState() {
     super.initState();
-    _connect();
+    _initialize();
+  }
+
+  void _initialize() async {
+    token = await getToken() ?? '';
+    if (token.isNotEmpty) {
+      _connect();
+    }
   }
 
   Future<String?> getToken() async {
@@ -52,31 +64,28 @@ class _ContactsPageState extends State<ContactsPage> {
     return prefs.getString('token');
   }
 
-
-
   Future _connect() async {
     try {
-      String? token = await getToken();
-      if (token != null) {
-        final response = await http.post(
-          Uri.parse('http://47.245.82.251:31104/api/community/chat/connect'),
-          headers: {
-            'Authorization': token
-          }
-        );
-        print('${response.body}');
-        if (response.statusCode == 200) {
-          final responseData = jsonDecode(response.body);
-          if (responseData['code'] == 0) {
-            print('Received: ${responseData['data']}');
-            channel = WebSocketChannel.connect(
-              Uri.parse(responseData['data']),
-            );
-            channel.stream.listen(
+      final response = await http.post(
+        Uri.parse('http://47.245.82.251:31104/api/community/chat/connect'),
+        headers: {
+          'Authorization': token
+        }
+      );
+      print('${response.body}');
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData['code'] == 0) {
+          print('Received: ${responseData['data']}');
+          channel = WebSocketChannel.connect(
+            Uri.parse(responseData['data']),
+          );
+          if (channel != null) {
+            channel?.stream.listen(
               (message) {
                 print('Received: $message');
               },
-               onDone: () {
+                onDone: () {
                 print('onDone: ');
               },
               onError: (error) {
@@ -84,34 +93,40 @@ class _ContactsPageState extends State<ContactsPage> {
                 print('Error: $error');
               },
             );
-            channel.sink.add('Hello, WebSocket!');
-            final response2 = await http.post(
-              Uri.parse('http://47.245.82.251:31104/api/community/chat/connected'),
-              headers: {
-                'Authorization': token
-              }
-            );
-            print('${response2.body}');
-          } else {
+            channel?.sink.add('Hello, WebSocket!');
           }
+          
+          final response2 = await http.post(
+            Uri.parse('http://47.245.82.251:31104/api/community/chat/connected'),
+            headers: {
+              'Authorization': token
+            }
+          );
+          print('${response2.body}');
         } else {
         }
+      } else {
       }
     } catch (e) {
       print('$e');
     }
   }
 
+  Future addFriend() async {
+    
+  }
+
   @override
   Widget build(BuildContext context) {
       return ListView(
         children: [
-          StreamBuilder(
-            stream: channel?.stream,
-            builder: (context, snapshot) {
-              return Text(snapshot.hasData ? '${snapshot.data}' : '');
-            },
-          ),
+          if (channel != null) 
+            StreamBuilder(
+              stream: channel?.stream,
+              builder: (context, snapshot) {
+                  return Text(snapshot.hasData ? '${snapshot.data}' : '');
+                },
+              ),
           for (var contact in contacts) 
             // ListTile(
             //   leading: ClipRRect(
