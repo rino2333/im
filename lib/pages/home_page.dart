@@ -4,6 +4,8 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+import 'chat_page.dart';
+
 class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
@@ -23,8 +25,8 @@ class _HomePageState extends State<HomePage> {
           title: Text('IM'),
           backgroundColor: Colors.grey.shade200,
           actions: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.search, color: Colors.white,)),
-            IconButton(onPressed: () {}, icon: Icon(Icons.add, color: Colors.white,))
+            // IconButton(onPressed: () {}, icon: Icon(Icons.search, color: Colors.white,)),
+            IconButton(onPressed: () {}, icon: Icon(Icons.add, color: Colors.black,))
           ],
         )
       ),
@@ -136,48 +138,54 @@ class _ContactsPageState extends State<ContactsPage> {
             //   title: Text(contact, style: const TextStyle(fontWeight: FontWeight.bold),),
             //   subtitle: Text('Some other info', style: const TextStyle(fontSize: 12),),
             // ),
-            Container(
-              height: 72,
-              padding: const EdgeInsets.only(left: 12,),
-              color: Color(0xffffffff),
-              child: Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.asset('assets/images/dandan.png', width: 50, height: 50,),
-                  ),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey,
-                            width: 0.3,
-                          ),
-                        )
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            contact, 
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 6,),
-                          Text(
-                            'Some other info',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ],
+            GestureDetector(
+              onTap: () => {
+                print(contact),
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(contact: contact,)))
+              },
+              child: Container(
+                height: 72,
+                padding: const EdgeInsets.only(left: 12,),
+                color: Color(0xffffffff),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset('assets/images/dandan.png', width: 50, height: 50,),
+                    ),
+                    SizedBox(width: 10,),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 0.3,
+                            ),
+                          )
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              contact, 
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 6,),
+                            Text(
+                              'Some other info',
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-        ],
+          ],
       );
   }
 }
