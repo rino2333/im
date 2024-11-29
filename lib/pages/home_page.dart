@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:namer_app/pages/login_page.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import 'chat_page.dart';
+import 'add_contacts_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -26,7 +28,11 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.grey.shade200,
           actions: [
             // IconButton(onPressed: () {}, icon: Icon(Icons.search, color: Colors.white,)),
-            IconButton(onPressed: () {}, icon: Icon(Icons.add, color: Colors.black,))
+            IconButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AddContactsPage()));
+              }, 
+              icon: Icon(Icons.add, color: Colors.black,))
           ],
         )
       ),
@@ -64,6 +70,18 @@ class _ContactsPageState extends State<ContactsPage> {
   Future<String?> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
+  }
+
+  Future clearSharedPreferences() async {
+    print('object');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    if (mounted) {
+      Navigator.pushReplacement(
+        context, 
+        MaterialPageRoute(builder: (context) => LoginPage(),)
+      );
+    }
   }
 
   Future _connect() async {
@@ -106,11 +124,14 @@ class _ContactsPageState extends State<ContactsPage> {
           );
           print('${response2.body}');
         } else {
+          await clearSharedPreferences();
         }
       } else {
+        await clearSharedPreferences();
       }
     } catch (e) {
       print('$e');
+      await clearSharedPreferences();
     }
   }
 
@@ -185,6 +206,9 @@ class _ContactsPageState extends State<ContactsPage> {
                 ),
               ),
             ),
+            ElevatedButton(onPressed: () {
+              clearSharedPreferences();
+            }, child: Text('Log Out'))
           ],
       );
   }

@@ -3,7 +3,13 @@ import 'pages/login_page.dart';
 import 'pages/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+SharedPreferences? prefs;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  prefs = await SharedPreferences.getInstance();
+
   runApp(const MyApp());
 }
 
@@ -31,8 +37,8 @@ class MyApp extends StatelessWidget {
   }
 
   Future<String?> getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs?.getString('token');
   }
 }
 
