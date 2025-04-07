@@ -87,7 +87,7 @@ class _ContactsPageState extends State<ContactsPage> {
   Future _connect() async {
     try {
       final response = await http.post(
-        Uri.parse('http://47.245.82.251:31104/api/community/chat/connect'),
+        Uri.parse('http://127.0.0.1:31104/api/community/chat/connect'),
         headers: {
           'Authorization': token
         }
@@ -117,7 +117,7 @@ class _ContactsPageState extends State<ContactsPage> {
           }
           
           final response2 = await http.post(
-            Uri.parse('http://47.245.82.251:31104/api/community/chat/connected'),
+            Uri.parse('http://127.0.0.1:31104/api/community/chat/connected'),
             headers: {
               'Authorization': token
             }

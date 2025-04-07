@@ -29,7 +29,7 @@ class RegisterPageState extends State<RegisterPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://47.245.82.251:31104/api/community/auth/register'),
+        Uri.parse('http://127.0.0.1:31104/api/community/auth/register'),
         headers: {
           'content-type': 'application/json',
         },
@@ -93,7 +93,6 @@ class RegisterPageState extends State<RegisterPage> {
             TextField(
               controller: _nicknameController,
               decoration: InputDecoration(labelText: 'nickname'),
-              obscureText: true,
             ),
             const SizedBox(height: 20,),
             ElevatedButton(onPressed: _register, child: const Text('Register')),

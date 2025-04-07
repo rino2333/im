@@ -39,7 +39,7 @@ class _AccountState extends State<Account> {
     print(token);
 
           final response = await http.post(
-            Uri.parse('http://47.245.82.251:31104/api/community/friend/friend-add-cancel'),
+            Uri.parse('http://127.0.0.1:31104/api/community/friend/friend-add-cancel'),
             headers: {
               'Authorization': token
             },

@@ -11,7 +11,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageControler = TextEditingController();
-  List<String> messages = [];
+  List<String> messages = ['adasd', 'adasd', 'adasd', 'adasd', 'adasd', 'adasd', 'adasd', 'adasd', 'adasd', 'adasd', 'adasd', 'adasd', 'adasd', 'fe0f596e3cca4fad8a8c2f4136264b77e253d06b54a14d2fbbf22bd2c4809de00ab2b6a591c9489280e43db8c1919fc33dc219df3012444c940790b49ce0ca33'];
   final ScrollController _scrollController = ScrollController();
 
   void _sendMessage(String value) {
@@ -21,7 +21,18 @@ class _ChatPageState extends State<ChatPage> {
         messages.add(message);
       });
       _messageControler.clear();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToBottom();
+      });
     }
+  }
+
+  void _scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeOut
+    );
   }
 
   @override
