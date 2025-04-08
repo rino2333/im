@@ -92,7 +92,7 @@ class _ContactsPageState extends State<ContactsPage> {
           'Authorization': token
         }
       );
-      print('${response.body}');
+      print(response.body);
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         if (responseData['code'] == 0) {
@@ -122,7 +122,7 @@ class _ContactsPageState extends State<ContactsPage> {
               'Authorization': token
             }
           );
-          print('${response2.body}');
+          print(response2.body);
         } else {
           await clearSharedPreferences();
         }

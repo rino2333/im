@@ -48,7 +48,7 @@ class LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         if (responseData['code'] == 0) {
-          print('login succes!${responseData}');
+          print('login succes!$responseData');
           setState(() {
             _successMessage = 'Login successful!';
             _errorMessage = '';
@@ -56,7 +56,7 @@ class LoginPageState extends State<LoginPage> {
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
           });
         } else {
-          print('login succes!${responseData}');
+          print('login succes!$responseData');
           setState(() {
             _errorMessage = 'Login error!${responseData['message']}';
             _successMessage = '';
